@@ -1,0 +1,15 @@
+<div class="col-md-6">
+  <h2> HN Feed</h2>
+  <table class="table table-striped">
+    <thead>
+    </thead>
+    <tbody>
+    <tr *ngFor="let article of articles.hits">
+      <td class="hidden">{{article.story_title}}</td> <!--Se usa interpolacion para el data binding-->
+      <td>{{article.title}}</td>
+      <td>{{article.createdAt}}</td>
+      <td><button class="btn btn-danger" (click)="deleteArticle(article)"> Delete</button></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
