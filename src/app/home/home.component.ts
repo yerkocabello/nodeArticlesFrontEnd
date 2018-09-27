@@ -1,25 +1,46 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ArticlesService} from '../services/articles.service';
 import {Router} from '@angular/router';
 import {Article} from '../model/article.model';
-import {catchError} from 'rxjs/operators';
-import {throwError} from 'rxjs';
-import {forEach} from '@angular/router/src/utils/collection';
+import {catchError, switchMap} from 'rxjs/operators';
+import {Subscription, throwError, timer} from 'rxjs';
+
+
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   articles: Article[];
-  articlesFromApi: Article[];
   newArticles: Boolean = false;
+  sub: Subscription;
 
   constructor(private router: Router, private articlesService: ArticlesService) { }
 
-  ngOnInit() {
-    this.articlesService.getArticlesApi()
+    ngOnInit() {
+
+        this.sub = timer(0, 3600000)
+            .pipe(
+            switchMap(() => this.articlesService.getArticles())
+        ).subscribe(result => {
+                result.hits.forEach(value => {
+                    const obj = this.articles.find(value1 => value1.objectID === value.objectID);
+                    if (obj === null) {
+                        this.articles.push(value);
+                        this.newArticles = true;
+                    }
+                });
+                if (this.newArticles) {
+                    this.articlesService.insertArticles(this.articles)
+                        .subscribe(value2 =>  {
+                            console.log(value2);
+                        });
+                }
+            });
+
+        this.articlesService.getArticlesApi()
         .pipe(catchError(err => err.code === 404
             ? throwError('Not found')
             : throwError(err)))
@@ -47,23 +68,8 @@ export class HomeComponent implements OnInit {
       });
   }
 
-    loadArticlesFromApi() {
-        setTimeout(() => {
-            this.articlesService.getArticles()
-                .subscribe(value1 => {
-                    value1.hits.forEach(value => {
-                        if (this.articles.indexOf(value) <= 0 ) {
-                            this.articles.push(value);
-                            this.newArticles = true;
-                        }
-                    });
-                    if (this.newArticles) {
-                        this.articlesService.insertArticles(this.articles)
-                            .subscribe(value2 =>  {
-                                console.log(value2);
-                            });
-                    }
-                });
-        }, 5000);
-    }
+  ngOnDestroy() {
+      this.sub.unsubscribe();
+  }
 }
+

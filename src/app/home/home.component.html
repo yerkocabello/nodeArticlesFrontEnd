@@ -4,11 +4,12 @@
     <thead>
     </thead>
     <tbody>
-    <tr *ngFor="let article of articles"><a href="{{article.story_url !== null ? article.story_url : article.url}}" target="_blank">
+    <tr *ngFor="let article of articles">
+      <a href="{{article.story_url !== null ? article.story_url : article.url}}" target="_blank"  *ngIf="article.story_title !== null || article.title !== null">
       <td class="hidden">{{article.story_title !== null ? article.story_title : article.title }}</td>
-      <td>{{article.title}}</td>
-      <td>{{article.created_at}}</td></a>
-      <td><button class="btn btn-danger" (click)="deleteArticle(article)"> Delete</button></td>
+      <td>{{article.title}}</td></a>
+      <td>{{article.created_at | niceDateFormatPipe}}</td>
+        <td  *ngIf="article.story_title !== null || article.title !== null"><button class="btn btn-danger" (click)="deleteArticle(article)"> Delete</button></td>
     </tr>
     </tbody>
   </table>

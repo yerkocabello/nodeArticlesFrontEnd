@@ -7,11 +7,13 @@ import {routing} from './app.routing';
 import {ArticlesService} from './services/articles.service';
 import {Data} from './providers/data';
 import {HttpClientModule} from '@angular/common/http';
+import { CustomDateFormatPipePipe } from './custom-date-format-pipe.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    CustomDateFormatPipePipe
   ],
   imports: [
     BrowserModule,
