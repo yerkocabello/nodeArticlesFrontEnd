@@ -3,6 +3,8 @@ import {ArticlesService} from '../services/articles.service';
 import {Router} from '@angular/router';
 import {Article} from '../model/article.model';
 import {ArticleList} from '../model/articleList.model';
+import {catchError} from 'rxjs/operators';
+import {throwError} from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -16,13 +18,20 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.articlesService.getArticlesApi()
-      .subscribe(value => {
-        if (value !== undefined) {
+        .pipe(catchError(err => err.code === 404
+            ? throwError('Not found')
+            : throwError(err)))
+        .subscribe(value => {
+        if (value.hits !== undefined) {
+            console.log('se encontraron desde base de datos');
+            console.log(value.hits);
           this.articles = value;
         } else {
+            console.log('obtener desde url');
           this.articlesService.getArticles()
             .subscribe(value1 => {
               this.articles = value1;
+              console.log(value1);
             });
           this.articlesService.insertArticles(this.articles)
             .subscribe(value1 => {
