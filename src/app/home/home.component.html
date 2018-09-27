@@ -4,10 +4,10 @@
     <thead>
     </thead>
     <tbody>
-    <tr *ngFor="let article of articles.hits">
-      <td class="hidden">{{article.story_title}}</td> <!--Se usa interpolacion para el data binding-->
+    <tr *ngFor="let article of articles.hits"  routerLink="{{article.story_url}}"><a href="{{article.story_url}}"></a>
+      <td class="hidden">{{article.story_title !== null ? article.story_title : article.title }}</td>
       <td>{{article.title}}</td>
-      <td>{{article.createdAt}}</td>
+      <td>{{article.created_at}}</td>
       <td><button class="btn btn-danger" (click)="deleteArticle(article)"> Delete</button></td>
     </tr>
     </tbody>

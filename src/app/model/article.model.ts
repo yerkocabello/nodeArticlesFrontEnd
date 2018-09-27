@@ -1,6 +1,6 @@
 export class Article extends Object {
 
-  createdAt: string;
+  created_at: string;
   title: string;
   url: string;
   author: string;

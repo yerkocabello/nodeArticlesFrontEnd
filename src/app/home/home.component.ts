@@ -33,10 +33,10 @@ export class HomeComponent implements OnInit {
               this.articles = value1;
               console.log(value1);
             });
-          this.articlesService.insertArticles(this.articles)
+          /*this.articlesService.insertArticles(this.articles)
             .subscribe(value1 => {
               console.log(value1);
-            });
+            });*/
         }
       });
   }
@@ -46,5 +46,14 @@ export class HomeComponent implements OnInit {
       .subscribe(value => {
         this.articles.hits = this.articles.hits.filter(value1 => value1 !== article);
       });
+  }
+
+  goURL(article: Article): void {
+      console.log("navegando a nueva url");
+      if (article.story_url !== undefined) {
+         this.router.navigateByUrl(article.story_url);
+      } else {
+          this.router.navigateByUrl(article.url);
+      }
   }
 }
