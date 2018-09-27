@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {ArticlesService} from '../services/articles.service';
 import {Router} from '@angular/router';
 import {Article} from '../model/article.model';
-import {ArticleList} from '../model/articleList.model';
 import {catchError} from 'rxjs/operators';
 import {throwError} from 'rxjs';
+import {forEach} from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +12,9 @@ import {throwError} from 'rxjs';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  articles: ArticleList;
+  articles: Article[];
+  articlesFromApi: Article[];
+  newArticles: Boolean = false;
 
   constructor(private router: Router, private articlesService: ArticlesService) { }
 
@@ -22,38 +24,46 @@ export class HomeComponent implements OnInit {
             ? throwError('Not found')
             : throwError(err)))
         .subscribe(value => {
-        if (value.hits !== undefined) {
-            console.log('se encontraron desde base de datos');
-            console.log(value.hits);
+        if (value.length > 0) {
           this.articles = value;
+          return;
         } else {
-            console.log('obtener desde url');
           this.articlesService.getArticles()
             .subscribe(value1 => {
-              this.articles = value1;
-              console.log(value1);
+                this.articles = value1.hits;
+                this.articlesService.insertArticles(this.articles)
+                    .subscribe(value2 =>  {
+                        console.log(value2);
+                    });
             });
-          /*this.articlesService.insertArticles(this.articles)
-            .subscribe(value1 => {
-              console.log(value1);
-            });*/
         }
       });
   }
 
   deleteArticle(article: Article): void {
-    this.articlesService.deleteArticle(article.objectId)
+    this.articlesService.deleteArticle(article.objectID)
       .subscribe(value => {
-        this.articles.hits = this.articles.hits.filter(value1 => value1 !== article);
+        this.articles = this.articles.filter(value1 => value1 !== article);
       });
   }
 
-  goURL(article: Article): void {
-      console.log("navegando a nueva url");
-      if (article.story_url !== undefined) {
-         this.router.navigateByUrl(article.story_url);
-      } else {
-          this.router.navigateByUrl(article.url);
-      }
-  }
+    loadArticlesFromApi() {
+        setTimeout(() => {
+            this.articlesService.getArticles()
+                .subscribe(value1 => {
+                    value1.hits.forEach(value => {
+                        if (this.articles.indexOf(value) <= 0 ) {
+                            this.articles.push(value);
+                            this.newArticles = true;
+                        }
+                    });
+                    if (this.newArticles) {
+                        this.articlesService.insertArticles(this.articles)
+                            .subscribe(value2 =>  {
+                                console.log(value2);
+                            });
+                    }
+                });
+        }, 5000);
+    }
 }

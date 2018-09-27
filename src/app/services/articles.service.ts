@@ -13,16 +13,16 @@ export class ArticlesService {
   url = 'https://hn.algolia.com/api/v1/search_by_date?query=nodejs';
   apiUrl = 'http://localhost:3000/api/articles';
 
-  getArticlesApi(): Observable<ArticleList> {
-    return this.http.get<ArticleList>(this.apiUrl);
+  getArticlesApi(): Observable<Article[]> {
+    return this.http.get<Article[]>(this.apiUrl);
   }
 
   getArticles(): Observable<ArticleList> {
     return this.http.get<ArticleList>(this.url);
   }
 
-  insertArticles(article: ArticleList): Observable<ArticleList> {
-    return this.http.post<ArticleList>(this.apiUrl,  article);
+  insertArticles(articles: Article[]): Observable<Article[]> {
+    return this.http.post<Article[]>(this.apiUrl, articles);
   }
 
   deleteArticle(id: string): Observable<void> {
