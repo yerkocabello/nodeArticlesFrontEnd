@@ -1,15 +1,16 @@
 <div class="col-md-6">
-  <h2> HN Feed</h2>
+  <h1> HN Feed</h1>
+  <h2> We<3 hacker news </h2>
   <table class="table table-striped">
     <thead>
     </thead>
     <tbody>
     <tr *ngFor="let article of articles">
       <a href="{{article.story_url !== null ? article.story_url : article.url}}" target="_blank"  *ngIf="article.story_title !== null || article.title !== null">
-      <td class="hidden">{{article.story_title !== null ? article.story_title : article.title }}</td>
-      <td>{{article.title}}</td></a>
-      <td>{{article.created_at | niceDateFormatPipe}}</td>
-        <td  *ngIf="article.story_title !== null || article.title !== null"><button class="btn btn-danger" (click)="deleteArticle(article)"> Delete</button></td>
+      <td [class]="normal">{{article.story_title !== null ? article.story_title : article.title }}</td></a>
+      <td class="author">{{article.author}}</td>
+      <td class="time" >{{article.created_at | niceDateFormatPipe}}</td>
+        <td *ngIf="article.story_title !== null || article.title !== null"><button class="ui-icon-red" (click)="deleteArticle(article)"></button></td>
     </tr>
     </tbody>
   </table>
