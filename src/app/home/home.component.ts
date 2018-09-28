@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   articles: Article[];
   newArticles: Article[];
   sub: Subscription;
+  normal = 'normal';
 
   constructor(private router: Router, private articlesService: ArticlesService) { }
 

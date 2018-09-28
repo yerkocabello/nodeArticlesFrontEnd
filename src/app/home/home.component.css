@@ -1,0 +1,27 @@
+.normal{
+    bg-color: #fff;
+    border: 1px #ccc
+}
+.title{
+    font-color: #333;
+    font-size: 13pt
+}
+
+.time{
+    font-color: #333;
+    font-size: 13pt
+}
+
+.author{
+    font-color: #999
+}
+.mouse-over{
+    bg-color: #fafafa
+}
+
+.ui-icon-red
+{
+    background-image: url("../resources/trash.png");
+    width: 40px;
+    height: 40px
+}
