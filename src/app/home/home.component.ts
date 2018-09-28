@@ -14,7 +14,7 @@ import {Subscription, throwError, timer} from 'rxjs';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   articles: Article[];
-  newArticles: Boolean = false;
+  newArticles: Article[];
   sub: Subscription;
 
   constructor(private router: Router, private articlesService: ArticlesService) { }
@@ -25,17 +25,17 @@ export class HomeComponent implements OnInit, OnDestroy {
             .pipe(
             switchMap(() => this.articlesService.getArticles())
         ).subscribe(result => {
+            this.newArticles = new Array();
                 result.hits.forEach(value => {
                     const obj = this.articles.find(value1 => value1.objectID === value.objectID);
                     if (obj === null) {
-                        this.articles.push(value);
-                        this.newArticles = true;
+                        this.newArticles.push(value);
                     }
                 });
-                if (this.newArticles) {
-                    this.articlesService.insertArticles(this.articles)
+                if (this.newArticles.length > 0) {
+                    this.articlesService.insertArticles(this.newArticles)
                         .subscribe(value2 =>  {
-                            console.log(value2);
+                            this.articles.concat(this.newArticles);
                         });
                 }
             });
